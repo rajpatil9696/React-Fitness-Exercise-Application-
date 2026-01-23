@@ -4,7 +4,6 @@ import { exerciseOptions, fetchData } from '../utils/fetchData'
 import HorizontalScrollbar from './HorizontalScrollbar'
 
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
-
   const [search, setSearch] = useState('')
   const [bodyParts, setBodyParts] = useState([])
 
@@ -24,27 +23,28 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   }, [])
 
   const handleSearch = async () => {
-    if (search.trim()) {
-      const exerciseData = await fetchData(
-        'https://exercisedb.p.rapidapi.com/exercises',
-        exerciseOptions
-      )
+    if (!search.trim()) return
 
-      const searchedExercises = exerciseData.filter(
-        (exercise) =>
-          exercise.name.toLowerCase().includes(search) ||
-          exercise.target.toLowerCase().includes(search) ||
-          exercise.bodyPart.toLowerCase().includes(search)
-      )
+    const exerciseData = await fetchData(
+      'https://exercisedb.p.rapidapi.com/exercises',
+      exerciseOptions
+    )
 
-      setSearch('')
-      setExercises(searchedExercises)
-    }
+    if (!Array.isArray(exerciseData)) return
+
+    const searchedExercises = exerciseData.filter(
+      (exercise) =>
+        exercise.name.toLowerCase().includes(search) ||
+        exercise.target.toLowerCase().includes(search) ||
+        exercise.bodyPart.toLowerCase().includes(search)
+    )
+
+    setSearch('')
+    setExercises(searchedExercises)
   }
 
   return (
     <Stack alignItems="center" mt="37px" p="20px">
-
       <Typography
         fontWeight={700}
         sx={{ fontSize: { lg: '44px', xs: '30px' } }}
@@ -57,7 +57,6 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
       <Box position="relative" mb="72px">
         <TextField
           placeholder="Search Exercises"
-          type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value.toLowerCase())}
           sx={{
@@ -88,7 +87,6 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
           setBodyPart={setBodyPart}
         />
       </Box>
-
     </Stack>
   )
 }
